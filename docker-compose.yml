@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: taskflow-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: taskflow_db
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - taskflow-net
+
+  # (Backend)
+  backend:
+    build: ./taskflow-backend
+    container_name: backend
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=taskflow_db
+    depends_on:
+      - db
+    networks:
+      - taskflow-net
+
+  #  (Frontend)
+  frontend:
+    build: ./frontend
+    container_name: taskflow-ui
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - taskflow-net
+
+networks:
+  taskflow-net:
+    driver: bridge
