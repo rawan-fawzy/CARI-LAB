@@ -15,7 +15,9 @@ services:
 
   # (Backend)
   backend:
-    build: ./taskflow-backend
+    build:
+      context: ./taskflow-backend
+      dockerfile: Dockerfile
     container_name: backend
     environment:
       - DB_HOST=db
