@@ -32,8 +32,8 @@ services:
   #  (Frontend)
   frontend:
     build:
-      context: .  # النقطة دي معناها المجلد الرئيسي (CARI-LAB)
-      dockerfile: frontend/Dockerfile # مكان الملف بالظبط
+      context: ./frontend  # ادخل جوه مجلد الـ frontend الأول
+      dockerfile: Dockerfile # الملف موجود جواه مباشرة
     container_name: taskflow-ui
     ports:
       - "80:80"

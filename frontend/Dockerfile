@@ -17,17 +17,12 @@
 
 FROM node:18-alpine AS build
 WORKDIR /app
-
-# جربي دي: انسخي كل حاجة في الفولدر الأول عشان نتأكد إنها موجودة
-COPY . .
-
-# بعد ما نسخنا كل حاجة، المفروض package.json يكون موجود جوه /app
-RUN ls -la 
-
+# بما إن الـ Context هو الفولدر نفسه
+COPY package*.json ./
 RUN npm install
+COPY . .
 RUN npm run build
 
-# المرحلة 2: Nginx (زي ما هي)
 FROM nginx:stable-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
