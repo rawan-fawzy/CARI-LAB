@@ -24,7 +24,7 @@ pipeline {
         stage('Build Images') {
             steps {
                 echo 'Building Docker images...'
-                sh 'docker-compose -f ${COMPOSE_FILE} build'
+                sh 'docker-compose -f ${COMPOSE_FILE} build --no-cache'
             }
         }
 
