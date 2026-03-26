@@ -21,12 +21,17 @@ pipeline {
             }
         }
 
-        stage('Build Images') {
-            steps {
-                echo 'Building Docker images...'
-                sh 'docker-compose -f ${COMPOSE_FILE} build --no-cache'
-            }
-        }
+       stage('Build Images') {
+    steps {
+        echo 'Checking files before build...'
+        // السطر ده هيطبع لنا كل الملفات عشان نعرف package.json فين بالظبط
+        sh 'ls -R' 
+        
+        echo 'Building Docker images...'
+        // هنستخدم الأمر المباشر لضمان إن Docker شايف المسار
+        sh 'docker-compose build --no-cache'
+    }
+}
 
         stage('Deploy') {
             steps {
