@@ -31,9 +31,7 @@ services:
 
   #  (Frontend)
   frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
+    build: ./frontend   # هنرجع نخلي الـ context هو فولدر الفرونت بس
     container_name: taskflow-ui
     ports:
       - "80:80"

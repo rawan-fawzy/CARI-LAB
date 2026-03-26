@@ -15,23 +15,21 @@
 # EXPOSE 80
 # CMD ["nginx", "-g", "daemon off;"]
 
-# المرحلة 1: بناء تطبيق React/Vite
 FROM node:18-alpine AS build
 WORKDIR /app
 
-# التعديل هنا: بنقوله الملفات موجودة جوه فولدر frontend
-# COPY [المسار على الجهاز] [المسار جوه الحاوية]
-COPY frontend/package*.json ./
-RUN npm install
+# جربي تكتبي اسم الملف صراحةً بدون علامة * للتأكد
+COPY package.json ./
+# لو فيه package-lock انسخيه برضه
+COPY package-lock.json* ./
 
-# بننسخ كل حاجة تخص الفرونت إند جوه الحاوية
-COPY frontend/ .
+RUN npm install
+COPY . .
 RUN npm run build
 
-# المرحلة 2: تشغيل Nginx
 FROM nginx:stable-alpine
-# بنحدد مسار ملف nginx.conf الصح برضه
-COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
+# تأكدي إن ملف nginx.conf موجود جوه فولدر frontend جنب الـ Dockerfile
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
