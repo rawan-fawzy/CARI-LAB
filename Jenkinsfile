@@ -31,7 +31,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Starting containers...'
-                (Detached mode)
+                //(Detached mode)
                 sh 'docker-compose -f ${COMPOSE_FILE} up -d'
             }
         }
