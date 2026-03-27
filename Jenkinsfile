@@ -16,47 +16,46 @@ pipeline {
 
         stage('Cleanup') {
             steps {
-                echo 'Cleaning up old containers...'
-                sh 'docker-compose -f ${COMPOSE_FILE} down --remove-orphans 2>/dev/null || true'
+                echo 'Cleaning up old containers and volumes...'
+                // التعديل هنا: أضفنا -v لمسح الـ Volume البايظ بتاع الـ DB
+                sh 'docker compose down -v --remove-orphans || true'
             }
         }
 
-       stage('Build Images') {
-    steps {
-        echo 'Checking files before build...'
-        // السطر ده هيطبع لنا كل الملفات عشان نعرف package.json فين بالظبط
-        sh 'ls -R' 
-        
-        echo 'Building Docker images...'
-        // هنستخدم الأمر المباشر لضمان إن Docker شايف المسار
-        sh 'docker-compose build --no-cache'
-    }
-}
+        stage('Build Images') {
+            steps {
+                echo 'Checking files before build...'
+                sh 'ls -R' 
+                
+                echo 'Building Docker images...'
+                // استخدمنا docker compose بدون شرطة لضمان التوافق مع السيرفر
+                sh 'docker compose build --no-cache'
+            }
+        }
 
         stage('Deploy') {
             steps {
                 echo 'Starting containers...'
-                //(Detached mode)
-                sh 'docker-compose -f ${COMPOSE_FILE} up -d'
+                sh 'docker compose up -d'
             }
         }
 
         stage('Health Check') {
             steps {
                 echo 'Verifying that the application is running...'
-                sleep 15 
-                sh 'docker-compose -f ${COMPOSE_FILE} ps'
+                sleep 20 // زودنا الوقت شوية عشان الـ MySQL تلحق تقوم
+                sh 'docker compose ps'
             }
         }
     }
 
     post {
         success {
-            echo "Build #${BUILD_NUMBER} succeeded! App is live at http://localhost"
+            echo "Build #${BUILD_NUMBER} succeeded! App is live at http://192.168.75.128"
         }
         failure {
             echo "Build #${BUILD_NUMBER} failed!"
-            sh 'docker-compose -f ${COMPOSE_FILE} down'
+            sh 'docker compose down'
         }
     }
 }
