@@ -47,8 +47,10 @@ app.delete('/tasks/:id', (req, res) => {
   tasks = tasks.filter(t => t.id !== parseInt(req.params.id));
   res.status(204).send();
 });
- 
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+
+// التعديل هنا: أضفنا '0.0.0.0'
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`TaskFlow API running on port ${PORT}`);
 });

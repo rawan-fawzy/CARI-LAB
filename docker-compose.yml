@@ -19,6 +19,8 @@ services:
       context: ./taskflow-backend
       dockerfile: Dockerfile
     container_name: backend
+    ports:
+      - "3000:3000"
     environment:
       - DB_HOST=db
       - DB_USER=root
